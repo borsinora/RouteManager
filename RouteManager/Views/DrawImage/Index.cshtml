@@ -1,0 +1,68 @@
+﻿@model RouteManager.Models.DrawImageModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Útvonal kirajzolása</h2>
+<span>A(z) @Model.RouteType.Name nevű útvonalhoz @Model.AllRoutes.Count bejárás tartozik. </span>
+@if (Model.AllRoutes.Count > 1)
+{
+    if (Model.ShowAll)
+    {
+        using (Html.BeginForm(string.Format("Index/{0}", Model.RouteType.Id), "DrawImage", FormMethod.Get))
+        {
+            <input type="hidden" name="showAll" value="false" />
+            <input type="submit" name="all" value="Egy bejárás mutatása" />
+        }
+    }
+    else
+    {
+        using (Html.BeginForm(string.Format("Index/{0}", Model.RouteType.Id), "DrawImage", FormMethod.Get))
+        {
+            <input type="hidden" name="showAll" value="true" />
+            <input type="submit" name="all" value="Összes bejárás mutatása" />
+        }
+    }
+}
+else
+{
+    <input type="submit" name="all" value="Összes bejárás mutatása" disabled />
+}
+<br />
+<img src="@Url.Action("DrawImage", "DrawImage", new { id = Model.RouteType.Id, showAll = Model.ShowAll })" />
+<br /><br />
+<p>Statisztikák:</p>
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>Út teljes hossza</th>
+        <th>Egyéni rekord</th>
+        <th>Átlagos sebesség</th>
+    </tr>
+    <tr>
+        <td>@Model.AverageLength km</td>
+        <td>@Model.BestTime</td>
+        <td>@Model.AverageVelocity km/h</td>
+    </tr>
+</table>
+<br />
+<p>Koordináták által felosztott szakaszok adatai:</p>
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>Szakasz első koordinátája</th>
+        <th>Szakasz második koordinátája</th>
+        <th>Időtartam</th>
+        <th>Út hossza</th>
+        <th>Átlagos sebesség</th>
+    </tr>
+    @foreach (var item in Model.RouteSectionInfos)
+    {
+        <tr>
+            <td>@item.FirstCoordinate.ToString()</td>
+            <td>@item.SecondCoordinate.ToString()</td>
+            <td>@item.SectionTime</td>
+            <td>@item.SectionLength km</td>
+            <td>@item.SectionVelocity km/h</td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,57 @@
+﻿@model RouteManager.Models.AddNewRouteModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Új útvonal hozzáadása</h2>
+<br />
+@if (!ViewBag.ShowList || (ViewBag.ShowList && Model.NewRoute.RouteType.Name != ""))
+{
+    using (Html.BeginForm("UploadXML", "AddNewRoute", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" id="fileUpload" name="fileUpload" style="float:left" /> <br /><br />
+        <input type="submit" value="Hozzáad" class="btn btn-success" />
+    }
+}
+<br />
+
+<br />
+@if (ViewBag.ShowList)
+{
+    <p>A következő bejárást elmentettük az adatbázisba.</p>
+    if (Model.NewRoute.RouteType.Name != "")
+    {
+        <p>@string.Format("A bejárás a(z) {0} nevű útvonalhoz tartozik.", Model.NewRoute.RouteType.Name) </p>
+    }
+    else
+    {
+        using (Html.BeginForm("EditRouteType", "AddNewRoute"))
+        {
+            <p>Adjon meg nevet és leírást az újonnan felvett útvonalnak:</p>
+            <input type="hidden" name="Id" value="@Model.NewRoute.RouteType.Id" />
+            <input type="submit" value="Új útvonal adatainak megadása" class="btn btn-success" />
+        }
+    }
+        <br />
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th>X koordináta</th>
+                <th>Y koordináta</th>
+                <th>Dátum</th>
+            </tr>
+            @foreach (var item in Model.NewCoordinates)
+            {
+                <tr>
+                    <td>@item.X</td>
+                    <td>@item.Y</td>
+                    <td>@item.Date</td>
+                </tr>
+            }
+        </table>
+}
+else if(Model != null && Model.NewRoute != null)
+{
+    <p>@string.Format("Ez a bejárás már hozzá lett adva a(z) {0} nevű útvonalhoz.", Model.NewRoute.RouteType.Name) </p>
+}
+

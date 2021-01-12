@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="RoutesDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Coordinates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RouteId" Type="int" Nullable="false" />
+          <Property Name="X" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Y" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Routes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RouteTypeId" Type="int" Nullable="false" />
+          <Property Name="Length" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Duration" Type="time" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RouteType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_RouteCoordinates">
+          <End Role="Routes" Type="Self.Routes" Multiplicity="1" />
+          <End Role="Coordinates" Type="Self.Coordinates" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Routes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Coordinates">
+              <PropertyRef Name="RouteId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RouteTypeIdRoutes">
+          <End Role="RouteType" Type="Self.RouteType" Multiplicity="1" />
+          <End Role="Routes" Type="Self.Routes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RouteType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Routes">
+              <PropertyRef Name="RouteTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RoutesDatabaseModelStoreContainer">
+          <EntitySet Name="Coordinates" EntityType="Self.Coordinates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Routes" EntityType="Self.Routes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RouteType" EntityType="Self.RouteType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_RouteCoordinates" Association="Self.FK_RouteCoordinates">
+            <End Role="Routes" EntitySet="Routes" />
+            <End Role="Coordinates" EntitySet="Coordinates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RouteTypeIdRoutes" Association="Self.FK_RouteTypeIdRoutes">
+            <End Role="RouteType" EntitySet="RouteType" />
+            <End Role="Routes" EntitySet="Routes" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="RoutesDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Coordinate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RouteId" Type="Int32" Nullable="false" />
+          <Property Name="X" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Y" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Route" Relationship="Self.FK_RouteCoordinates" FromRole="Coordinates" ToRole="Routes" />
+        </EntityType>
+        <EntityType Name="Route">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RouteTypeId" Type="Int32" Nullable="false" />
+          <Property Name="Length" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Duration" Type="Time" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Coordinates" Relationship="Self.FK_RouteCoordinates" FromRole="Routes" ToRole="Coordinates" />
+          <NavigationProperty Name="RouteType" Relationship="Self.FK_RouteTypeIdRoutes" FromRole="Routes" ToRole="RouteType" />
+        </EntityType>
+        <EntityType Name="RouteType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Routes" Relationship="Self.FK_RouteTypeIdRoutes" FromRole="RouteType" ToRole="Routes" />
+        </EntityType>
+        <Association Name="FK_RouteCoordinates">
+          <End Role="Routes" Type="Self.Route" Multiplicity="1" />
+          <End Role="Coordinates" Type="Self.Coordinate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Routes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Coordinates">
+              <PropertyRef Name="RouteId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RouteTypeIdRoutes">
+          <End Role="RouteType" Type="Self.RouteType" Multiplicity="1" />
+          <End Role="Routes" Type="Self.Route" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RouteType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Routes">
+              <PropertyRef Name="RouteTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RoutesDatabaseEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Coordinates" EntityType="Self.Coordinate" />
+          <EntitySet Name="Routes" EntityType="Self.Route" />
+          <EntitySet Name="RouteTypes" EntityType="Self.RouteType" />
+          <AssociationSet Name="FK_RouteCoordinates" Association="Self.FK_RouteCoordinates">
+            <End Role="Routes" EntitySet="Routes" />
+            <End Role="Coordinates" EntitySet="Coordinates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RouteTypeIdRoutes" Association="Self.FK_RouteTypeIdRoutes">
+            <End Role="RouteType" EntitySet="RouteTypes" />
+            <End Role="Routes" EntitySet="Routes" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="RoutesDatabaseModelStoreContainer" CdmEntityContainer="RoutesDatabaseEntities1">
+          <EntitySetMapping Name="Coordinates">
+            <EntityTypeMapping TypeName="RoutesDatabaseModel.Coordinate">
+              <MappingFragment StoreEntitySet="Coordinates">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RouteId" ColumnName="RouteId" />
+                <ScalarProperty Name="X" ColumnName="X" />
+                <ScalarProperty Name="Y" ColumnName="Y" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Routes">
+            <EntityTypeMapping TypeName="RoutesDatabaseModel.Route">
+              <MappingFragment StoreEntitySet="Routes">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RouteTypeId" ColumnName="RouteTypeId" />
+                <ScalarProperty Name="Length" ColumnName="Length" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RouteTypes">
+            <EntityTypeMapping TypeName="RoutesDatabaseModel.RouteType">
+              <MappingFragment StoreEntitySet="RouteType">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

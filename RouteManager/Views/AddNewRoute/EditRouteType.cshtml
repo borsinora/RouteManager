@@ -1,0 +1,57 @@
+﻿@model RouteManager.Models.EditRouteModel
+
+@{
+    ViewBag.Title = "EditRouteType";
+}
+
+<h2>Név és megjegyzés hozzáadása</h2>
+<br />
+
+
+@using (Html.BeginForm("AddNameAndDescription", "AddNewRoute", FormMethod.Post))
+{
+    <input type="hidden" name="routeType" value="@Model.RouteType.Id" />
+    <label for="nev">Útvonal megnevezése:</label>
+    <br />
+    if (Model.RouteType.Name == "")
+    {
+        <input type="text" name="name" class="form-control" id="nev" />
+    }
+    else
+    {
+        <input type="text" name="name" class="form-control" id="nev" value="@Model.RouteType.Name" />
+    }
+
+    <br />
+    <label for="desc">Megjegyzés: </label>
+    <br />
+    if (Model.RouteType.Description == "")
+    {
+        <textarea class="form-control" id="desc" name="desc"></textarea>
+    }
+    else
+    {
+        <textarea class="form-control" id="desc" name="desc" >@Model.RouteType.Description</textarea>
+    }
+
+    <br />
+    if (TempData["EditIsDone"] != null && TempData["EditIsDone"].Equals(true))
+    {
+        <input type="submit" value="Szerkeszt" class="btn btn-success" disabled />
+    }
+    else
+    {
+        <input type="submit" value="Szerkeszt" class="btn btn-success" />
+    }
+
+}
+
+<br />
+@if (TempData["EditIsDone"] != null && TempData["EditIsDone"].Equals(true))
+{
+    <p>Módosítva!</p>
+}
+<br />
+
+<a href="@Url.Action("Index", "Home")" class="btn btn-default">Vissza a főoldalra</a>
+

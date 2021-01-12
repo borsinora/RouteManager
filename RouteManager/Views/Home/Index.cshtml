@@ -1,0 +1,35 @@
+﻿@model RouteManager.Models.BrowseRouteModel
+@{
+    ViewBag.Title = "Home Page";
+}
+<br />
+<h1>Üdvözöllek az útvonal nyilvántartó honlapon!</h1>
+<br />
+<p>Itt tudsz új útvonalat és bejárást hozzáadni: </p>
+<a href="@Url.Action("Index", "AddNewRoute")" class="btn btn-success">Új útvonal</a>
+<hr />
+<h2>Itt tudsz böngészni az eddigi útvonalak között:</h2>
+<br />
+
+
+<br />
+<table class="table table-bordered table-bordered">
+    <tr>
+        <th>Útvonal neve</th>
+        <th>Útvonal leírása</th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model.RouteTypes)
+    {
+        if (true)
+        {
+
+        }
+        <tr>
+        <td>@Html.ActionLink((string.IsNullOrEmpty(item.Name) ? "<névtelen út>" : item.Name), string.Format("Index/{0}", item.Id), "DrawImage")</td>
+        <td>@item.Description</td>
+        <td >@Html.ActionLink("Szerkesztés", string.Format("EditRouteType/{0}", item.Id), "AddNewRoute")</td>
+        </tr>
+    }
+</table>
+
